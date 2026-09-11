@@ -1,9 +1,10 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
-import { ArrowBack, Delete, Inventory2 } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
+import { Delete, Inventory2 } from "@mui/icons-material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import {
   useDeleteProduct,
@@ -11,8 +12,10 @@ import {
   useUpdateProduct,
 } from "@/features/products/hooks";
 import { ProductForm } from "@/features/products/product-form";
+import { ProductImages } from "@/features/products/product-images";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function EditProductPage({
   params,
@@ -28,9 +31,7 @@ export default function EditProductPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/products">
-          Back to products
-        </Button>
+        <BackButton href="/products" label="Back to products" />
         <Button
           variant="outlined"
           color="error"
@@ -48,18 +49,21 @@ export default function EditProductPage({
         color="success"
       />
       {isLoading || !product ? (
-        <CircularProgress size={24} />
+        <FormSkeleton rows={4} />
       ) : (
-        <Card>
-          <CardContent>
-            <ProductForm
-              mode="edit"
-              defaultValues={product}
-              isSubmitting={updateProduct.isPending}
-              onSubmit={(values) => updateProduct.mutate({ productID, values })}
-            />
-          </CardContent>
-        </Card>
+        <>
+          <ProductImages product={product} />
+          <Card>
+            <CardContent>
+              <ProductForm
+                mode="edit"
+                defaultValues={product}
+                isSubmitting={updateProduct.isPending}
+                onSubmit={(values) => updateProduct.mutate({ productID, values })}
+              />
+            </CardContent>
+          </Card>
+        </>
       )}
       <ConfirmDialog
         open={confirmOpen}

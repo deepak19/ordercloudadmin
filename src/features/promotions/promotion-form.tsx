@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Divider, Grid, Stack, Typography } from 
 import { promotionSchema, type PromotionFormValues } from "@/features/promotions/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface PromotionFormProps {
   mode: "create" | "edit";
@@ -22,8 +23,13 @@ export function PromotionForm({
   onSubmit,
   isSubmitting,
 }: PromotionFormProps) {
-  const { handleSubmit, control } = useForm<PromotionFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<PromotionFormValues>({
     resolver: zodResolver(promotionSchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Code: defaultValues?.Code ?? "",
@@ -39,6 +45,8 @@ export function PromotionForm({
     },
   });
 
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
+
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 640 }}>
       <Stack spacing={2.5}>
@@ -50,7 +58,7 @@ export function PromotionForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Code" label="Code" placeholder="SUMMER10" />
+        <FormTextField control={control} name="Code" label="Code" placeholder="SUMMER10" required />
         <FormTextField control={control} name="Name" label="Name" />
         <FormTextField control={control} name="Description" label="Description" multiline rows={3} />
 
@@ -107,7 +115,7 @@ export function PromotionForm({
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >

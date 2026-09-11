@@ -53,8 +53,11 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
+    mode: "onBlur",
     defaultValues: { brandId: DEFAULT_BRAND_ID, username: "", password: "" },
   });
+
+  const showBrandPicker = BRANDS.length > 1;
 
   async function onSubmit(values: LoginValues) {
     setServerError(null);
@@ -69,14 +72,18 @@ export default function LoginPage() {
     <Card sx={{ width: "100%", maxWidth: 400 }}>
       <CardHeader
         title="Sign in"
-        subheader="Select your brand and enter your OrderCloud admin credentials to continue."
+        subheader={
+          showBrandPicker
+            ? "Select your brand and enter your OrderCloud admin credentials to continue."
+            : "Enter your OrderCloud admin credentials to continue."
+        }
       />
       <CardContent>
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2.5}>
             {serverError && <Alert severity="error">{serverError}</Alert>}
 
-            <Box>
+            <Box sx={{ display: showBrandPicker ? "block" : "none" }}>
               <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
                 Brand
               </Typography>
@@ -127,12 +134,13 @@ export default function LoginPage() {
               name="username"
               label="Username"
               autoComplete="username"
+              autoFocus
             />
             <FormTextField
               control={control}
               name="password"
               label="Password"
-              type="password"
+              revealable
               autoComplete="current-password"
             />
 

@@ -11,9 +11,10 @@ const statusColor: Record<string, "primary" | "default" | "error"> = {
   Canceled: "error",
 };
 
+// `field` values are OrderCloud model properties so server-side sortBy works.
 export const returnColumns: GridColDef<OrderReturn>[] = [
   {
-    field: "id",
+    field: "ID",
     headerName: "Return ID",
     flex: 1,
     renderCell: (params) => (
@@ -23,15 +24,16 @@ export const returnColumns: GridColDef<OrderReturn>[] = [
     ),
   },
   {
-    field: "orderID",
+    field: "OrderID",
     headerName: "Order",
     flex: 1,
     valueGetter: (_, row) => row.OrderID,
   },
   {
-    field: "status",
+    field: "Status",
     headerName: "Status",
     width: 150,
+    sortable: false,
     renderCell: (params) => (
       <Chip
         size="small"
@@ -41,9 +43,10 @@ export const returnColumns: GridColDef<OrderReturn>[] = [
     ),
   },
   {
-    field: "refundAmount",
+    field: "RefundAmount",
     headerName: "Refund Amount",
     width: 150,
+    sortable: false,
     valueGetter: (_, row) => (row.RefundAmount != null ? `$${row.RefundAmount.toFixed(2)}` : "—"),
   },
 ];

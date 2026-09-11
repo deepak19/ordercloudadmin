@@ -5,17 +5,22 @@ export function listOrders({
   page,
   pageSize,
   search,
+  sortBy,
+  filters,
 }: {
   direction: OrderDirection;
   page: number;
   pageSize: number;
   search: string;
+  sortBy?: string;
+  filters?: Record<string, string>;
 }) {
   return Orders.List<Order>(direction, {
     page,
     pageSize,
     search,
-    sortBy: ["!DateSubmitted"],
+    sortBy: sortBy ? [sortBy as never] : ["!DateSubmitted"],
+    filters: filters?.status ? { Status: filters.status } : undefined,
   });
 }
 

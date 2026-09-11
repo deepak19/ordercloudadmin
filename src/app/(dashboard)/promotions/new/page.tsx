@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowBack, LocalOffer } from "@mui/icons-material";
-import { Button, Card, CardContent, Stack } from "@mui/material";
+import { LocalOffer } from "@mui/icons-material";
+import { Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import { useCreatePromotion } from "@/features/promotions/hooks";
 import { PromotionForm } from "@/features/promotions/promotion-form";
@@ -13,17 +14,8 @@ export default function NewPromotionPage() {
 
   return (
     <Stack spacing={2}>
-      <Button
-        variant="text"
-        size="small"
-        startIcon={<ArrowBack />}
-        component={Link}
-        href="/promotions"
-        sx={{ width: "fit-content" }}
-      >
-        Back to promotions
-      </Button>
-      <PageHeader icon={LocalOffer} title="New promotion" description="Create a new discount code or promotion." color="error" />
+      <BackButton href="/promotions" label="Back to promotions" />
+      <PageHeader icon={LocalOffer} title="New promotion" description="Create a new discount code or promotion." color="secondary" />
       <Card>
         <CardContent>
           <PromotionForm

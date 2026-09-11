@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { buyerSchema, type BuyerFormValues } from "@/features/buyers/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface BuyerFormProps {
   mode: "create" | "edit";
@@ -22,8 +23,13 @@ export function BuyerForm({
   onSubmit,
   isSubmitting,
 }: BuyerFormProps) {
-  const { handleSubmit, control } = useForm<BuyerFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<BuyerFormValues>({
     resolver: zodResolver(buyerSchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Name: defaultValues?.Name ?? "",
@@ -31,6 +37,8 @@ export function BuyerForm({
       Active: defaultValues?.Active ?? true,
     },
   });
+
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 640 }}>
@@ -43,13 +51,13 @@ export function BuyerForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Name" label="Name" />
+        <FormTextField control={control} name="Name" label="Name" required />
         <FormTextField control={control} name="DefaultCatalogID" label="Default Catalog ID" />
         <FormSwitch control={control} name="Active" label="Active" />
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >

@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { supplierSchema, type SupplierFormValues } from "@/features/suppliers/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface SupplierFormProps {
   mode: "create" | "edit";
@@ -22,8 +23,13 @@ export function SupplierForm({
   onSubmit,
   isSubmitting,
 }: SupplierFormProps) {
-  const { handleSubmit, control } = useForm<SupplierFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Name: defaultValues?.Name ?? "",
@@ -31,6 +37,8 @@ export function SupplierForm({
       Active: defaultValues?.Active ?? true,
     },
   });
+
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 640 }}>
@@ -43,13 +51,13 @@ export function SupplierForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Name" label="Name" />
+        <FormTextField control={control} name="Name" label="Name" required />
         <FormSwitch control={control} name="AllBuyersCanOrder" label="All buyers can order" />
         <FormSwitch control={control} name="Active" label="Active" />
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >

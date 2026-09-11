@@ -1,8 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
-import { ArrowBack, Add, AccountTree, Delete } from "@mui/icons-material";
+import { Add, AccountTree, Delete } from "@mui/icons-material";
 import type { Category } from "ordercloud-javascript-sdk";
 import {
   Box,
@@ -28,6 +27,7 @@ import {
   useDeleteCategory,
   useUpdateCategory,
 } from "@/features/categories/hooks";
+import { BackButton } from "@/components/back-button";
 import { CategoryForm } from "@/features/categories/category-form";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
@@ -59,15 +59,7 @@ export default function CategoriesPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button
-          variant="text"
-          size="small"
-          startIcon={<ArrowBack />}
-          component={Link}
-          href={`/catalogs/${catalogID}`}
-        >
-          Back to catalog
-        </Button>
+        <BackButton href={`/catalogs/${catalogID}`} label="Back to catalog" />
         <Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>
           New Category
         </Button>

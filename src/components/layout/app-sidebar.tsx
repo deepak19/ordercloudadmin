@@ -29,7 +29,14 @@ function hasActiveDescendant(item: NavItem, pathname: string): boolean {
 function NavEntry({ item, pathname, collapsed }: { item: NavItem; pathname: string; collapsed: boolean }) {
   const [expanded, setExpanded] = useState(() => hasActiveDescendant(item, pathname));
 
-  const itemSx = { mx: 1, mb: 0.5, "&:not(.Mui-selected) .MuiListItemIcon-root": { color: "text.secondary" } };
+  const itemSx = {
+    mx: 1,
+    mb: 0.5,
+    px: collapsed ? 1.25 : 2,
+    justifyContent: collapsed ? "center" : "flex-start",
+    "&:not(.Mui-selected) .MuiListItemIcon-root": { color: "text.secondary" },
+  };
+  const iconSx = { minWidth: collapsed ? 0 : 40, justifyContent: "center" };
 
   if (item.children) {
     return (
@@ -40,7 +47,7 @@ function NavEntry({ item, pathname, collapsed }: { item: NavItem; pathname: stri
             selected={isActivePath(pathname, item.href)}
             sx={itemSx}
           >
-            <ListItemIcon sx={{ minWidth: 40 }}>
+            <ListItemIcon sx={iconSx}>
               <item.icon />
             </ListItemIcon>
             {!collapsed && (
@@ -76,7 +83,7 @@ function NavEntry({ item, pathname, collapsed }: { item: NavItem; pathname: stri
   return (
     <Tooltip title={collapsed ? item.title : ""} placement="right">
       <ListItemButton component={Link} href={item.href} selected={isActivePath(pathname, item.href)} sx={itemSx}>
-        <ListItemIcon sx={{ minWidth: 40 }}>
+        <ListItemIcon sx={iconSx}>
           <item.icon />
         </ListItemIcon>
         {!collapsed && <ListItemText primary={item.title} />}
@@ -85,35 +92,18 @@ function NavEntry({ item, pathname, collapsed }: { item: NavItem; pathname: stri
   );
 }
 
-export function AppSidebar() {
-  const pathname = usePathname();
-  const { brand } = useAuth();
-  const { collapsed } = useSidebar();
-
+function SidebarContent({ collapsed, pathname, brandName }: { collapsed: boolean; pathname: string; brandName: string }) {
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
-        flexShrink: 0,
-        whiteSpace: "nowrap",
-        transition: (theme) => theme.transitions.create("width"),
-        "& .MuiDrawer-paper": {
-          width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
-          overflowX: "hidden",
-          transition: (theme) => theme.transitions.create("width"),
-          boxSizing: "border-box",
-        },
-      }}
-    >
+    <>
       <Box
         component={Link}
         href="/"
         sx={{
           display: "flex",
           alignItems: "center",
+          justifyContent: collapsed ? "center" : "flex-start",
           gap: 1.5,
-          px: 2,
+          px: collapsed ? 0 : 2,
           height: 64,
           textDecoration: "none",
           color: "inherit",
@@ -136,7 +126,7 @@ export function AppSidebar() {
         </Box>
         {!collapsed && (
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }} noWrap>
-            {brand ? `${brand.name} Admin` : "OrderCloud Admin"}
+            {brandName}
           </Typography>
         )}
       </Box>
@@ -145,6 +135,48 @@ export function AppSidebar() {
           <NavEntry key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
         ))}
       </List>
+    </>
+  );
+}
+
+export function AppSidebar() {
+  const pathname = usePathname();
+  const { brand } = useAuth();
+  const { collapsed, isMobile, mobileOpen, closeMobile } = useSidebar();
+  const brandName = brand ? `${brand.name} Admin` : "OrderCloud Admin";
+
+  // Mobile: temporary overlay drawer that doesn't consume layout width.
+  if (isMobile) {
+    return (
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={closeMobile}
+        ModalProps={{ keepMounted: true }}
+        sx={{ "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, boxSizing: "border-box" } }}
+      >
+        <SidebarContent collapsed={false} pathname={pathname} brandName={brandName} />
+      </Drawer>
+    );
+  }
+
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
+        flexShrink: 0,
+        whiteSpace: "nowrap",
+        transition: (theme) => theme.transitions.create("width"),
+        "& .MuiDrawer-paper": {
+          width: collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
+          overflowX: "hidden",
+          transition: (theme) => theme.transitions.create("width"),
+          boxSizing: "border-box",
+        },
+      }}
+    >
+      <SidebarContent collapsed={collapsed} pathname={pathname} brandName={brandName} />
     </Drawer>
   );
 }

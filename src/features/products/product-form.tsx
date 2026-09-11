@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Divider, Grid, Stack, Typography } from 
 import { productSchema, type ProductFormValues } from "@/features/products/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface ProductFormProps {
   mode: "create" | "edit";
@@ -25,8 +26,10 @@ export function ProductForm({
   const {
     handleSubmit,
     control,
+    formState: { isDirty },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Name: defaultValues?.Name ?? "",
@@ -40,6 +43,8 @@ export function ProductForm({
     },
   });
 
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
+
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 640 }}>
       <Stack spacing={2.5}>
@@ -51,7 +56,7 @@ export function ProductForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Name" label="Name" />
+        <FormTextField control={control} name="Name" label="Name" required />
         <FormTextField control={control} name="Description" label="Description" multiline rows={4} />
         <FormSwitch control={control} name="Active" label="Active" />
 
@@ -120,7 +125,7 @@ export function ProductForm({
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >

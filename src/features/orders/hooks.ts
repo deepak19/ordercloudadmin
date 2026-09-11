@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { OrderDirection } from "ordercloud-javascript-sdk";
 
 import { useOcMutation } from "@/hooks/use-oc-mutation";
 import { cancelOrder, completeOrder, getOrder, listOrders } from "@/features/orders/api";
+import { writeListQuery } from "@/lib/list-return";
 
 const ORDERS_KEY = ["orders"];
 
@@ -17,13 +19,29 @@ export function useOrders() {
   const direction = (searchParams.get("direction") as OrderDirection) || "All";
   const page = Number(searchParams.get("page") ?? "1") || 1;
   const search = searchParams.get("search") ?? "";
-  const pageSize = 20;
+  const sortBy = searchParams.get("sortBy") ?? "";
+  const pageSize = Number(searchParams.get("pageSize") ?? "") || 20;
+  const status = searchParams.get("status") ?? "";
 
   const query = useQuery({
-    queryKey: [...ORDERS_KEY, { direction, page, pageSize, search }],
-    queryFn: () => listOrders({ direction, page, pageSize, search }),
+    queryKey: [...ORDERS_KEY, { direction, page, pageSize, search, sortBy, status }],
+    queryFn: () =>
+      listOrders({
+        direction,
+        page,
+        pageSize,
+        search,
+        sortBy: sortBy || undefined,
+        filters: status ? { status } : ({} as Record<string, string>),
+      }),
     placeholderData: keepPreviousData,
   });
+
+  // Remember this list's query so detail pages can return to the same view.
+  const queryString = searchParams.toString();
+  useEffect(() => {
+    writeListQuery(pathname, queryString);
+  }, [pathname, queryString]);
 
   function updateParams(next: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -38,13 +56,22 @@ export function useOrders() {
     items: query.data?.Items ?? [],
     meta: query.data?.Meta,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    error: query.error,
     direction,
     page,
+    pageSize,
     search,
+    sortBy,
+    filters: status ? { status } : ({} as Record<string, string>),
     setDirection: (nextDirection: OrderDirection) =>
       updateParams({ direction: nextDirection === "All" ? null : nextDirection, page: null }),
     setPage: (nextPage: number) => updateParams({ page: nextPage > 1 ? String(nextPage) : null }),
+    setPageSize: (nextPageSize: number) =>
+      updateParams({ pageSize: nextPageSize !== 20 ? String(nextPageSize) : null, page: null }),
     setSearch: (nextSearch: string) => updateParams({ search: nextSearch || null, page: null }),
+    setSortBy: (nextSortBy: string) => updateParams({ sortBy: nextSortBy || null, page: null }),
+    setFilter: (key: string, value: string) => updateParams({ [key]: value || null, page: null }),
   };
 }
 

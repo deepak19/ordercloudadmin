@@ -1,9 +1,10 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
-import { ArrowBack, Delete, LocalOffer } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
+import { Delete, LocalOffer } from "@mui/icons-material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import {
   useDeletePromotion,
@@ -13,6 +14,7 @@ import {
 import { PromotionForm } from "@/features/promotions/promotion-form";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function EditPromotionPage({
   params,
@@ -28,9 +30,7 @@ export default function EditPromotionPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/promotions">
-          Back to promotions
-        </Button>
+        <BackButton href="/promotions" label="Back to promotions" />
         <Button
           variant="outlined"
           color="error"
@@ -45,10 +45,10 @@ export default function EditPromotionPage({
         icon={LocalOffer}
         title={promotion?.Code || "Edit promotion"}
         description="Update this promotion's rules and details."
-        color="error"
+        color="secondary"
       />
       {isLoading || !promotion ? (
-        <CircularProgress size={24} />
+<FormSkeleton />
       ) : (
         <Card>
           <CardContent>

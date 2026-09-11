@@ -2,8 +2,14 @@ import { OrderReturns, type OrderReturn } from "ordercloud-javascript-sdk";
 
 import type { OcListParams } from "@/hooks/use-oc-list";
 
-export function listReturns({ page, pageSize, search }: OcListParams) {
-  return OrderReturns.List<OrderReturn>({ page, pageSize, search });
+export function listReturns({ page, pageSize, search, sortBy, filters }: OcListParams) {
+  return OrderReturns.List<OrderReturn>({
+    page,
+    pageSize,
+    search,
+    sortBy: sortBy ? [sortBy as never] : undefined,
+    filters: filters.status ? { Status: filters.status } : undefined,
+  });
 }
 
 export function getReturn(returnID: string) {

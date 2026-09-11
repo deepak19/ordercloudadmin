@@ -16,7 +16,7 @@ import {
 const RETURNS_KEY = ["returns"];
 
 export function useReturns() {
-  return useOcList({ queryKey: RETURNS_KEY, listFn: listReturns });
+  return useOcList({ queryKey: RETURNS_KEY, listFn: listReturns, filterKeys: ["status"] });
 }
 
 export function useReturn(returnID: string) {

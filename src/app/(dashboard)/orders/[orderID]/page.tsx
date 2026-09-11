@@ -1,24 +1,24 @@
 "use client";
 
 import { use } from "react";
-import Link from "next/link";
-import { ArrowBack, Block, CheckCircle, ShoppingCart } from "@mui/icons-material";
+import { Block, CheckCircle, ShoppingCart } from "@mui/icons-material";
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
   Chip,
-  CircularProgress,
   Divider,
   Grid,
   Stack,
   Typography,
 } from "@mui/material";
 
+import { BackButton } from "@/components/back-button";
 import { useCancelOrder, useCompleteOrder, useOrder } from "@/features/orders/hooks";
 import { DetailField } from "@/components/detail-field";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function OrderDetailPage({
   params,
@@ -31,7 +31,7 @@ export default function OrderDetailPage({
   const completeOrder = useCompleteOrder();
 
   if (isLoading || !order) {
-    return <CircularProgress size={24} />;
+    return <FormSkeleton />;
   }
 
   const canCancel = order.Status === "Open" || order.Status === "AwaitingApproval";
@@ -40,9 +40,7 @@ export default function OrderDetailPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/orders">
-          Back to orders
-        </Button>
+        <BackButton href="/orders" label="Back to orders" />
         <Stack direction="row" spacing={1}>
           {canComplete && (
             <Button

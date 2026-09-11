@@ -11,9 +11,10 @@ const statusColor: Record<string, "primary" | "default" | "error"> = {
   Canceled: "error",
 };
 
+// `field` values are OrderCloud model properties so server-side sortBy works.
 export const orderColumns: GridColDef<Order>[] = [
   {
-    field: "id",
+    field: "ID",
     headerName: "Order ID",
     flex: 1,
     renderCell: (params) => (
@@ -23,13 +24,13 @@ export const orderColumns: GridColDef<Order>[] = [
     ),
   },
   {
-    field: "from",
+    field: "FromCompanyID",
     headerName: "From",
     flex: 1,
     valueGetter: (_, row) => row.FromCompanyID ?? "—",
   },
   {
-    field: "status",
+    field: "Status",
     headerName: "Status",
     width: 150,
     renderCell: (params) => (
@@ -37,13 +38,13 @@ export const orderColumns: GridColDef<Order>[] = [
     ),
   },
   {
-    field: "total",
+    field: "Total",
     headerName: "Total",
     width: 120,
     valueGetter: (_, row) => (row.Total != null ? `$${row.Total.toFixed(2)}` : "—"),
   },
   {
-    field: "dateSubmitted",
+    field: "DateSubmitted",
     headerName: "Date Submitted",
     width: 180,
     valueGetter: (_, row) => (row.DateSubmitted ? new Date(row.DateSubmitted).toLocaleDateString() : "—"),

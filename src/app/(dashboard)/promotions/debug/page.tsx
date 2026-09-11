@@ -42,7 +42,7 @@ export default function PromotionDebugPage() {
         icon={BugReport}
         title="Promotion Debug"
         description="Look up an order to see which promotions are applied or eligible, and why."
-        color="error"
+        color="secondary"
       />
 
       <Card>

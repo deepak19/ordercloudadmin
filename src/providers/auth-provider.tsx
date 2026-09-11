@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       if (!selectedBrand.clientID) {
         throw new Error(
-          `NEXT_PUBLIC_${brandId.toUpperCase()}_OC_CLIENT_ID is not configured. Set it in .env.local.`,
+          `Brand "${selectedBrand.name}" has no OrderCloud clientID configured. Add it to the brand's entry in NEXT_PUBLIC_OC_BRANDS.`,
         );
       }
 
