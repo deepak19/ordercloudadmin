@@ -1,14 +1,16 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
-import { ArrowBack, Delete, People } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
+import { Delete, People } from "@mui/icons-material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import { useBuyer, useDeleteBuyer, useUpdateBuyer } from "@/features/buyers/hooks";
 import { BuyerForm } from "@/features/buyers/buyer-form";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function EditBuyerPage({
   params,
@@ -24,9 +26,7 @@ export default function EditBuyerPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/buyers">
-          Back to buyers
-        </Button>
+        <BackButton href="/buyers" label="Back to buyers" />
         <Button
           variant="outlined"
           color="error"
@@ -44,7 +44,7 @@ export default function EditBuyerPage({
         color="primary"
       />
       {isLoading || !buyer ? (
-        <CircularProgress size={24} />
+<FormSkeleton />
       ) : (
         <Card>
           <CardContent>

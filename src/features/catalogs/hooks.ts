@@ -16,7 +16,7 @@ import {
 const CATALOGS_KEY = ["catalogs"];
 
 export function useCatalogs() {
-  return useOcList({ queryKey: CATALOGS_KEY, listFn: listCatalogs });
+  return useOcList({ queryKey: CATALOGS_KEY, listFn: listCatalogs, filterKeys: ["status"] });
 }
 
 export function useCatalog(catalogID: string) {

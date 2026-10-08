@@ -1,9 +1,10 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
-import { ArrowBack, Business, Delete } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
+import { Business, Delete } from "@mui/icons-material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import {
   useDeleteSupplier,
@@ -13,6 +14,7 @@ import {
 import { SupplierForm } from "@/features/suppliers/supplier-form";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function EditSupplierPage({
   params,
@@ -28,9 +30,7 @@ export default function EditSupplierPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/suppliers">
-          Back to suppliers
-        </Button>
+        <BackButton href="/suppliers" label="Back to suppliers" />
         <Button
           variant="outlined"
           color="error"
@@ -48,7 +48,7 @@ export default function EditSupplierPage({
         color="secondary"
       />
       {isLoading || !supplier ? (
-        <CircularProgress size={24} />
+<FormSkeleton />
       ) : (
         <Card>
           <CardContent>

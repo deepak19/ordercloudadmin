@@ -2,14 +2,13 @@
 
 import { use } from "react";
 import Link from "next/link";
-import { ArrowBack, AssignmentReturn, Block, CheckCircle, ThumbDown, ThumbUp } from "@mui/icons-material";
+import { AssignmentReturn, Block, CheckCircle, ThumbDown, ThumbUp } from "@mui/icons-material";
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
   Chip,
-  CircularProgress,
   Grid,
   Stack,
   Typography,
@@ -22,8 +21,10 @@ import {
   useDeclineReturn,
   useReturn,
 } from "@/features/returns/hooks";
+import { BackButton } from "@/components/back-button";
 import { DetailField } from "@/components/detail-field";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function ReturnDetailPage({
   params,
@@ -38,7 +39,7 @@ export default function ReturnDetailPage({
   const completeReturn = useCompleteReturn();
 
   if (isLoading || !orderReturn) {
-    return <CircularProgress size={24} />;
+    return <FormSkeleton />;
   }
 
   const canApproveOrDecline = orderReturn.Status === "AwaitingApproval";
@@ -48,9 +49,7 @@ export default function ReturnDetailPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/returns">
-          Back to returns
-        </Button>
+        <BackButton href="/returns" label="Back to returns" />
         <Stack direction="row" spacing={1}>
           {canApproveOrDecline && (
             <>

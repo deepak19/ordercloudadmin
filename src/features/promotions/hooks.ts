@@ -16,7 +16,7 @@ import {
 const PROMOTIONS_KEY = ["promotions"];
 
 export function usePromotions() {
-  return useOcList({ queryKey: PROMOTIONS_KEY, listFn: listPromotions });
+  return useOcList({ queryKey: PROMOTIONS_KEY, listFn: listPromotions, filterKeys: ["status"] });
 }
 
 export function usePromotion(promotionID: string) {

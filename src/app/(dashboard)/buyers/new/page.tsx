@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowBack, People } from "@mui/icons-material";
-import { Button, Card, CardContent, Stack } from "@mui/material";
+import { People } from "@mui/icons-material";
+import { Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import { useCreateBuyer } from "@/features/buyers/hooks";
 import { BuyerForm } from "@/features/buyers/buyer-form";
@@ -13,16 +14,7 @@ export default function NewBuyerPage() {
 
   return (
     <Stack spacing={2}>
-      <Button
-        variant="text"
-        size="small"
-        startIcon={<ArrowBack />}
-        component={Link}
-        href="/buyers"
-        sx={{ width: "fit-content" }}
-      >
-        Back to buyers
-      </Button>
+      <BackButton href="/buyers" label="Back to buyers" />
       <PageHeader icon={People} title="New buyer" description="Create a new buyer organization." color="primary" />
       <Card>
         <CardContent>

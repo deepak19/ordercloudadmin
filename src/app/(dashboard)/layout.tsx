@@ -39,7 +39,9 @@ export default function DashboardLayout({
         <AppSidebar />
         <Box component="main" sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
           <DashboardHeader />
-          <Box sx={{ flex: 1, p: 2 }}>{children}</Box>
+          <Box sx={{ flex: 1, p: { xs: 2, md: 3 }, width: "100%", mx: "auto", maxWidth: 1400 }}>
+          {children}
+        </Box>
         </Box>
       </Box>
     </SidebarProvider>

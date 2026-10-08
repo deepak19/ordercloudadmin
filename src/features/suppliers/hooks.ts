@@ -16,7 +16,7 @@ import {
 const SUPPLIERS_KEY = ["suppliers"];
 
 export function useSuppliers() {
-  return useOcList({ queryKey: SUPPLIERS_KEY, listFn: listSuppliers });
+  return useOcList({ queryKey: SUPPLIERS_KEY, listFn: listSuppliers, filterKeys: ["status"] });
 }
 
 export function useSupplier(supplierID: string) {

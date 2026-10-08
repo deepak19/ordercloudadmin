@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { categorySchema, type CategoryFormValues } from "@/features/categories/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface CategoryFormProps {
   mode: "create" | "edit";
@@ -22,8 +23,13 @@ export function CategoryForm({
   onSubmit,
   isSubmitting,
 }: CategoryFormProps) {
-  const { handleSubmit, control } = useForm<CategoryFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Name: defaultValues?.Name ?? "",
@@ -33,6 +39,8 @@ export function CategoryForm({
       Active: defaultValues?.Active ?? true,
     },
   });
+
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -45,7 +53,7 @@ export function CategoryForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Name" label="Name" />
+        <FormTextField control={control} name="Name" label="Name" required />
         <FormTextField control={control} name="Description" label="Description" multiline rows={3} />
         <FormTextField
           control={control}
@@ -58,7 +66,7 @@ export function CategoryForm({
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >

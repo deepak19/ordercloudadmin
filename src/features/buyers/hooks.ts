@@ -16,7 +16,7 @@ import {
 const BUYERS_KEY = ["buyers"];
 
 export function useBuyers() {
-  return useOcList({ queryKey: BUYERS_KEY, listFn: listBuyers });
+  return useOcList({ queryKey: BUYERS_KEY, listFn: listBuyers, filterKeys: ["status"] });
 }
 
 export function useBuyer(buyerID: string) {

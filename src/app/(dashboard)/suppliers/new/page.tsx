@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowBack, Business } from "@mui/icons-material";
-import { Button, Card, CardContent, Stack } from "@mui/material";
+import { Business } from "@mui/icons-material";
+import { Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import { useCreateSupplier } from "@/features/suppliers/hooks";
 import { SupplierForm } from "@/features/suppliers/supplier-form";
@@ -13,16 +14,7 @@ export default function NewSupplierPage() {
 
   return (
     <Stack spacing={2}>
-      <Button
-        variant="text"
-        size="small"
-        startIcon={<ArrowBack />}
-        component={Link}
-        href="/suppliers"
-        sx={{ width: "fit-content" }}
-      >
-        Back to suppliers
-      </Button>
+      <BackButton href="/suppliers" label="Back to suppliers" />
       <PageHeader icon={Business} title="New supplier" description="Create a new supplier organization." color="secondary" />
       <Card>
         <CardContent>

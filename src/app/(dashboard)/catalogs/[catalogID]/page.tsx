@@ -2,8 +2,10 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
-import { AccountTree, ArrowBack, Delete, MenuBook } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
+import { AccountTree, Delete, MenuBook } from "@mui/icons-material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+
+import { BackButton } from "@/components/back-button";
 
 import {
   useCatalog,
@@ -13,6 +15,7 @@ import {
 import { CatalogForm } from "@/features/catalogs/catalog-form";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageHeader } from "@/components/page-header";
+import { FormSkeleton } from "@/components/form/form-skeleton";
 
 export default function CatalogDetailPage({
   params,
@@ -28,9 +31,7 @@ export default function CatalogDetailPage({
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Button variant="text" size="small" startIcon={<ArrowBack />} component={Link} href="/catalogs">
-          Back to catalogs
-        </Button>
+        <BackButton href="/catalogs" label="Back to catalogs" />
         <Stack direction="row" spacing={1}>
           <Button
             variant="outlined"
@@ -59,7 +60,7 @@ export default function CatalogDetailPage({
         color="info"
       />
       {isLoading || !catalog ? (
-        <CircularProgress size={24} />
+<FormSkeleton />
       ) : (
         <Card>
           <CardContent>

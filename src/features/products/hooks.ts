@@ -16,7 +16,11 @@ import {
 const PRODUCTS_KEY = ["products"];
 
 export function useProducts() {
-  return useOcList({ queryKey: PRODUCTS_KEY, listFn: listProducts });
+  return useOcList({
+    queryKey: PRODUCTS_KEY,
+    listFn: listProducts,
+    filterKeys: ["status", "isParent"],
+  });
 }
 
 export function useProduct(productID: string) {

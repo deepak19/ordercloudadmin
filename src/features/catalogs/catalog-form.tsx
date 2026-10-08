@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { catalogSchema, type CatalogFormValues } from "@/features/catalogs/schema";
 import { FormTextField } from "@/components/form/form-text-field";
 import { FormSwitch } from "@/components/form/form-switch";
+import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 
 interface CatalogFormProps {
   mode: "create" | "edit";
@@ -22,8 +23,13 @@ export function CatalogForm({
   onSubmit,
   isSubmitting,
 }: CatalogFormProps) {
-  const { handleSubmit, control } = useForm<CatalogFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<CatalogFormValues>({
     resolver: zodResolver(catalogSchema),
+    mode: "onBlur",
     defaultValues: {
       ID: defaultValues?.ID ?? "",
       Name: defaultValues?.Name ?? "",
@@ -31,6 +37,8 @@ export function CatalogForm({
       Active: defaultValues?.Active ?? true,
     },
   });
+
+  useUnsavedChangesWarning(isDirty && !isSubmitting);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: 640 }}>
@@ -43,13 +51,13 @@ export function CatalogForm({
             placeholder="Auto-generated if left blank"
           />
         )}
-        <FormTextField control={control} name="Name" label="Name" />
+        <FormTextField control={control} name="Name" label="Name" required />
         <FormTextField control={control} name="Description" label="Description" multiline rows={3} />
         <FormSwitch control={control} name="Active" label="Active" />
         <Button
           type="submit"
           variant="contained"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "edit" && !isDirty)}
           sx={{ width: "fit-content" }}
           startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}
         >
